@@ -145,8 +145,8 @@ public class ObsSSOAuthInterceptor implements ClientHttpRequestInterceptor {
 				wrapper.getHeaders().set("X-Auth-Token", authToken);
 				logger.debug("wrapper url " + wrapper.getURI());
 				response = execution.execute(wrapper, body);
-				logger.debug("response : " + response.getStatusCode());
-				logger.debug("response : " + response.getStatusText());
+				logger.info("response : " + response.getStatusCode());
+				logger.info("response : " + response.getStatusText());
 				if (response.getStatusCode().equals(HttpStatus.FOUND)) {
 					authToken = null;
 				} else {
