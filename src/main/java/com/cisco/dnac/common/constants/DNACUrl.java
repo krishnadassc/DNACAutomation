@@ -10,11 +10,11 @@ public interface DNACUrl {
 	
 	String PNP_GET = "dna/intent/api/v1/onboarding/pnp-device";
 
-	String PNP_STATUS = "onboarding/pnp-device?serialNumber=";
+	String PNP_STATUS = "dna/intent/api/v1/onboarding/pnp-device?serialNumber=";
 	
-	String PNP_IMPORT = "onboarding/pnp-device/import";
+	String PNP_IMPORT = "dna/intent/api/v1/onboarding/pnp-device/import";
 	
-	String PNP_CLAIM = "onboarding/pnp-device/claim";
+	String PNP_CLAIM = "dna/intent/api/v1/onboarding/pnp-device/site-claim";
 	
 	String PNP_DEVICES = "dna/intent/api/v1/onboarding/pnp-device";
 	

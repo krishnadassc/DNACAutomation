@@ -32,7 +32,6 @@ public class SharedSortedSchedulerSet {
 
 	public static class ScheduleComparator implements Comparator<Schedule> {
 
-		@Override
 		public int compare(Schedule s1, Schedule s2) {
 			if (s1.getNextExecutionTime() > s2.getNextExecutionTime()) {
 				return 1;

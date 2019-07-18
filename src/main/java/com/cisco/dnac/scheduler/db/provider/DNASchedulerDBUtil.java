@@ -6,11 +6,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
 import com.cisco.dnac.scheduler.dao.RemoteTaskRunInfo;
 import com.cisco.dnac.scheduler.dao.SystemStateEntry;
 import com.cisco.it.sig.common.dao.ICommonDao;
 
+@Service
 public class DNASchedulerDBUtil {
 
 	@Autowired

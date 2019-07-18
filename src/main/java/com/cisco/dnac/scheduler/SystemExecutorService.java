@@ -23,12 +23,10 @@ public final class SystemExecutorService implements SystemExecutorServiceIf {
 		return instance;
 	}
 
-	@Override
 	public Future<?> runNow(String name, TimerTask task) {
 		return this.executorService.sheduleNow(name, task);
 	}
 
-	@Override
 	public Future<?> runNow(String name, Runnable theRunnable) {
 		return this.executorService.sheduleNow(name, theRunnable);
 	}

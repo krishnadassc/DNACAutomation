@@ -117,23 +117,19 @@ public class MyScheduledExecutorService
 		this.taskExecutors.remove(taskName);
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public int getCorePoolSize() {
 		return corePoolSize;
 	}
 
-	@Override
 	public int getTotalTaskExecutors() {
 		this.cleanUpTaskExecutors();
 		return this.taskExecutors.size();
 	}
 
-	@Override
 	public int compareTo(MyScheduledExecutorService that) {
 		return this.getTotalTaskExecutors() - that.getTotalTaskExecutors();
 	}

@@ -37,7 +37,6 @@ public class ScheduleTaskExecutorService extends ScheduledThreadPoolExecutor {
 			this.theRunnable = theRunnable;
 		}
 
-		@Override
 		public void run() {
 			try {
 				theRunnable.run();
