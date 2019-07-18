@@ -332,7 +332,7 @@ public final class SystemTaskScheduler {
 		}
 	}
 
-	public void resetTaskStatusOnAgentDown(String agentName, int nodeId) {
+	/*public void resetTaskStatusOnAgentDown(String agentName, int nodeId) {
 		List<SystemStateEntry> status = dbutil.getTasksByAgentAndStatus(agentName,
 				SystemTaskStatusProvider.STATUS_IN_PROGRESS);
 
@@ -360,5 +360,5 @@ public final class SystemTaskScheduler {
 				dbutil.archiveStatus(runInfo);
 			}
 		}
-	}
+	}*/
 }
