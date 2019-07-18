@@ -13,4 +13,6 @@ public interface CommonUrl {
   String PNP_AUTOMATE_URL = BASE_URL+"/scheduler";
   
   String SITE_URL = BASE_URL+"/site";
+  
+  String CFS_URL = BASE_URL+"/cfs";
 }
