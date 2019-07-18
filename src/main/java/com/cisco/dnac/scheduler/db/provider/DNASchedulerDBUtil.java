@@ -4,30 +4,43 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import com.cisco.dnac.scheduler.JDBCObjStore;
 import com.cisco.dnac.scheduler.ObjStore;
 import com.cisco.dnac.scheduler.dao.RemoteTaskRunInfo;
 import com.cisco.dnac.scheduler.dao.SystemStateEntry;
+import com.cisco.it.sig.common.dao.ICommonDao;
 
 public class DNASchedulerDBUtil {
 
-	
+	@Autowired
+	private ICommonDao dao;
 
 	private static final Logger logger = Logger.getLogger(DNASchedulerDBUtil.class);
 
 	public void cleanupTaskStatus() {
 		try {
-
-			ObjStore<SystemStateEntry> store = ObjStoreHelper.getStore(SystemStateEntry.class);
-			String query = "value == '" + STATUS_IN_PROGRESS + "' || value == '" + STATUS_IN_SCHEDULED + "'";
-			store.modifyObjects(query, "value", STATUS_CANCELLED);
+			Query query = getActiveScheduleQuery();
+			SystemStateEntry systemStateEntry = dao.findByQuery(query , SystemStateEntry.class, "SystemStateEntry");
+			systemStateEntry.setValue("STATUS_CANCELLED");
+			dao.save(systemStateEntry);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.warn("Exception Occured in ", e);
 		}
 	}
 
+	  public static Query getActiveScheduleQuery() {
+		    Query query = new Query();
+		    Criteria criteriaOr = new Criteria();
+		    criteriaOr.orOperator(Criteria.where("value").is("STATUS_IN_SCHEDULED")
+		            , Criteria.where("value").is("STATUS_IN_SCHEDULED"));
+		    query.addCriteria(criteriaOr);
+		    return query;
+		  }
+	  
 	public SystemStateEntry getSystemStateProperty(String property) {
 
 		SystemStateEntry entry = null;

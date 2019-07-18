@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.cisco.dnac.common.Util.RestClient;
 import com.cisco.dnac.common.constants.DNACUrl;
+import com.cisco.it.sig.common.dao.ICommonDao;
 
 @Service
 public class SiteServiceImpl implements SiteService{
@@ -15,6 +16,9 @@ public class SiteServiceImpl implements SiteService{
 	@Autowired()
 	@Qualifier("dnacRestClient")
 	private RestClient restClient;
+	
+	@Autowired
+	private ICommonDao connondao;
 	
 	public String getAllSites() {
 		// TODO Auto-generated method stub
