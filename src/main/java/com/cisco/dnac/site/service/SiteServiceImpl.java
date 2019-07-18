@@ -25,7 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.lang.reflect.Type;
-
+import com.cisco.it.sig.common.dao.ICommonDao;
 
 @Service
 public class SiteServiceImpl implements SiteService{
