@@ -3,8 +3,6 @@ package com.cisco.dnac.site.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.entity.StringEntity;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,17 +13,7 @@ import org.springframework.stereotype.Service;
 import com.cisco.dnac.common.Util.RestClient;
 import com.cisco.dnac.common.constants.DNACUrl;
 import com.cisco.dnac.common.entity.SiteEntity;
-import com.cisco.dnac.site.service.SiteService;
-import com.cisco.it.sig.common.dao.CommonDaoImpl;
-import com.cisco.it.sig.common.dao.SiteProfileDao;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import java.lang.reflect.Type;
-import com.cisco.it.sig.common.dao.ICommonDao;
 
 @Service
 public class SiteServiceImpl implements SiteService{
@@ -66,7 +54,7 @@ public class SiteServiceImpl implements SiteService{
 	}
   
 	public List<SiteEntity> getSiteHierarchyBySiteId(String parentId) {
-		List<SiteEntity> siteEntityList = new ArrayList<>();
+		List<SiteEntity> siteEntityList = new ArrayList();
 		String sites = getAllSites(); 	
 		SiteEntity[] siteEntities = new GsonBuilder().create().fromJson(sites.toString(), SiteEntity[].class);
 		for(SiteEntity siteEnt : siteEntities) {
@@ -78,7 +66,7 @@ public class SiteServiceImpl implements SiteService{
 	}
 	
 	public List<SiteEntity> getSiteHierarchyBySiteHierarchyName(String groupNameHierarchy) {
-		List<SiteEntity> siteEntityList = new ArrayList<>();
+		List<SiteEntity> siteEntityList = new ArrayList();
 		String sites = getAllSites(); 	
 		SiteEntity[] siteEntities = new GsonBuilder().create().fromJson(sites.toString(), SiteEntity[].class);
 		for(SiteEntity siteEnt : siteEntities) {

@@ -28,8 +28,8 @@ public class PNPServiceImpl implements PnpService{
 		return "";
 	}
 	
-	public String pnpImport() {
-		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.POST, DNACUrl.PNP_IMPORT);
+	public String pnpImport(String payload) {
+		ResponseEntity<String> response =  restClient.exchange(payload, HttpMethod.POST, DNACUrl.PNP_IMPORT);
 		if(response.getStatusCodeValue() == 200)
 			return response.getBody();
 		return "";

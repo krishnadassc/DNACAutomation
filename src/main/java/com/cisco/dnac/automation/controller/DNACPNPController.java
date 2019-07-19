@@ -22,6 +22,8 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(CommonUrl.PNP_URL)
 public class DNACPNPController {
 
+	//flow
+	//1.
 	@Autowired
 	private PnpService pnpService;
 	private Logger logger = Logger.getLogger(DNACPNPController.class);
@@ -66,7 +68,7 @@ public class DNACPNPController {
 	@ResponseBody
 	public String pnpImport(@ApiParam @RequestBody String payload) {
 	    try {
-	    	String response = pnpService.pnpImport();
+	    	String response = pnpService.pnpImport(payload);
 	    	logger.info(response);
 	    	return response;
 	    } catch (Exception e) {
