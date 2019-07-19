@@ -5,7 +5,7 @@ import com.cisco.dnac.common.entity.DeviceProvisioningInfo;
 public interface CFSService {
 	
 	String getAllDeviceInfo();
-	String getDeviceInfoByNetworkDeviceId(String networkDeviceId);
+	DeviceProvisioningInfo getDeviceInfoByNetworkDeviceId(String networkDeviceId);
 	String provisionDevice(DeviceProvisioningInfo deviceInfo);
 
 }

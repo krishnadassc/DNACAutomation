@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service("botRestClient")
@@ -46,6 +47,17 @@ public class BOTRestClientUtil implements RestClient{
 	public ResponseEntity<String> exchange(String body, HttpMethod method, String url) {
 		try {
 			RequestEntity<String> reqEntity = new RequestEntity<String>(body, HttpMethod.POST, new URI("https://"+host+"/"+url));
+			ResponseEntity<String> respEntity = getRestTemplate().exchange(reqEntity, String.class);
+			return respEntity;			
+		}catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public ResponseEntity<String> exchange(String body, HttpMethod method, String url, MultiValueMap<String, String> headerMap) {
+		try {
+			
+			RequestEntity<String> reqEntity = new RequestEntity<String>(body, headerMap, HttpMethod.POST, new URI("https://"+host+"/"+url));
 			ResponseEntity<String> respEntity = getRestTemplate().exchange(reqEntity, String.class);
 			return respEntity;			
 		}catch (Exception e) {
