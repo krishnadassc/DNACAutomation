@@ -10,7 +10,7 @@ public interface CommonUrl {
 
 	String SCHEDULER = BASE_URL + "/scheduler";
 
-	String PNP_AUTOMATE_URL = BASE_URL + "/onboard";
+	String PNP_AUTOMATE_URL =  "/onboard";
 
 	String PNP_STATUS =  "/status";
 	
@@ -19,7 +19,8 @@ public interface CommonUrl {
 	String PNP_IMPORT = "/import";
 
 	String PNP_CLAIM = "/claim";
-
+	
+	
 	String SITE_URL = "/site";
 	
 	String CFS_URL = BASE_URL+"/cfs";

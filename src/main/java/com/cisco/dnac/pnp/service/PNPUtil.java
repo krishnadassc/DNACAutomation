@@ -16,14 +16,14 @@ public class PNPUtil {
     public static void main(String[] args) throws Exception {
         File input = new File("src/main/resources/sample.csv");
 
-        List<Map<?, ?>> data = readObjectsFromCsv(input);
+        List<Map<String, String>> data = readObjectsFromCsv(input);
         System.out.println(data);
     }
 
-    public static List<Map<?, ?>> readObjectsFromCsv(File file) throws IOException {
+    public static List<Map<String, String>> readObjectsFromCsv(File file) throws IOException {
         CsvSchema bootstrap = CsvSchema.emptySchema().withHeader();
         CsvMapper csvMapper = new CsvMapper();
-        MappingIterator<Map<?, ?>> mappingIterator = csvMapper.reader(Map.class).with(bootstrap).readValues(file);
+        MappingIterator<Map<String, String>> mappingIterator = csvMapper.reader(Map.class).with(bootstrap).readValues(file);
 
         return mappingIterator.readAll();
     }

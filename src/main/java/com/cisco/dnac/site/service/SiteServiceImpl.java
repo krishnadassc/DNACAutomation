@@ -58,7 +58,8 @@ public class SiteServiceImpl implements SiteService{
 	public String getAllSites() {
 		String siteResponse = getSitesAPIResponse();
 	    if(!siteResponse.equals(null) && !siteResponse.equals("")) {
-	    	return new JSONObject(siteResponse).getJSONArray("sites").toString();
+	    	
+	    	return new JSONObject(siteResponse).getJSONObject("response").getJSONArray("sites").toString();
 	    }
 	    return null;
 	}
@@ -75,12 +76,17 @@ public class SiteServiceImpl implements SiteService{
 	}
 	
 	public SiteEntity getSiteByGroupHierarchyName(String groupHierarchyName) {
-		String sites = getAllSites();
-		SiteEntity[] siteEntityList = new GsonBuilder().create().fromJson(sites.toString(), SiteEntity[].class);
-		for(SiteEntity siteEnt : siteEntityList) {
-			if(siteEnt.getGroupNameHierarchy().equalsIgnoreCase(groupHierarchyName)) {
-				return siteEnt;
+		try {
+			String sites = getAllSites();
+			System.out.println(sites.toString());
+			SiteEntity[] siteEntityList = new GsonBuilder().create().fromJson(sites.toString(), SiteEntity[].class);
+			for(SiteEntity siteEnt : siteEntityList) {
+				if(siteEnt.getGroupNameHierarchy().equalsIgnoreCase(groupHierarchyName)) {
+					return siteEnt;
+				}
 			}
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 	    return null;
 	}
@@ -122,7 +128,7 @@ public class SiteServiceImpl implements SiteService{
 	}
 	
 	public List<DeviceEntity> getFilteredDevicesList(List<String> deviceIds) {
-		List<DeviceEntity> deviceEntityListFiltered = new ArrayList<>();
+		List<DeviceEntity> deviceEntityListFiltered = new ArrayList();
 		for(DeviceEntity deviceEntity: getAllDevicesList()) {
 			for(String deviceId : deviceIds) {
 				if(deviceId.equalsIgnoreCase(deviceEntity.getId())) {
@@ -135,7 +141,7 @@ public class SiteServiceImpl implements SiteService{
 	}
 	
 	public List<String> getAllDeviceIds() {
-		List<String> deviceIds = new ArrayList<>();
+		List<String> deviceIds = new ArrayList();
 		for(DeviceEntity deviceEnt : getAllDevicesList()) {
 			deviceIds.add(deviceEnt.getId());
 		}
@@ -144,7 +150,7 @@ public class SiteServiceImpl implements SiteService{
   	
 	public List<String> getDeviceIdsBySiteHierarchyName(String groupNameHierarchy) { 
 		List<String> deviceList = getAllDeviceIds();
-		List<String> deviceIdList = new ArrayList<>();
+		List<String> deviceIdList = new ArrayList();
 		if(deviceList != null && !deviceList.isEmpty()) {
 			String deviceIdCommaSeparated = String.join(",", getAllDeviceIds());
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(DNACUrl.MEMBER_GROUP_URL)

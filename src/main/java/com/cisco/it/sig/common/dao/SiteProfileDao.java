@@ -12,7 +12,7 @@ public class SiteProfileDao extends CommonDaoImpl{
 	
 	//public CommonDaoImpl commonDao= new CommonDaoImpl();
 	public void saveSiteProfile(SiteEntity siteEntity) {
-		save(siteEntity);
+		super.save(siteEntity);
 	}
 
 	public SiteEntity findBySiteId(String siteId) {

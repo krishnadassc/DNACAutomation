@@ -5,16 +5,16 @@ import java.util.ArrayList;
 public class SiteProfileAttribute {
 	 private String key;
 	 private String value;
-	 ArrayList < SiteProfileSubAttribute > attribs = new ArrayList < SiteProfileSubAttribute > ();
+	 ArrayList < SiteProfileAttribute > attribs = new ArrayList < SiteProfileAttribute > ();
 
 
 	 // Getter Methods 
 
-	 public ArrayList<SiteProfileSubAttribute> getAttribs() {
+	 public ArrayList<SiteProfileAttribute> getAttribs() {
 		return attribs;
 	}
 
-	public void setAttribs(ArrayList<SiteProfileSubAttribute> attribs) {
+	public void setAttribs(ArrayList<SiteProfileAttribute> attribs) {
 		this.attribs = attribs;
 	}
 

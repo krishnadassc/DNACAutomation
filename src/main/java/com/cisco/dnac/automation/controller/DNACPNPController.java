@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cisco.dnac.common.CommonUrl;
 import com.cisco.dnac.common.constants.DNACUrl;
+import com.cisco.dnac.common.entity.SiteEntity;
+import com.cisco.dnac.pnp.entity.DeviceInfo;
 import com.cisco.dnac.pnp.service.PnpService;
+import com.google.gson.GsonBuilder;
 
 import io.swagger.annotations.ApiParam;
 
@@ -68,7 +71,8 @@ public class DNACPNPController {
 	@ResponseBody
 	public String pnpImport(@ApiParam @RequestBody String payload) {
 	    try {
-	    	String response = pnpService.pnpImport(payload);
+	    	DeviceInfo deviceinfo = new GsonBuilder().create().fromJson(payload, DeviceInfo.class);
+	    	String response = pnpService.pnpImport(deviceinfo);
 	    	logger.info(response);
 	    	return response;
 	    } catch (Exception e) {
@@ -81,7 +85,7 @@ public class DNACPNPController {
 	@ResponseBody
 	public String pnpClaim(@ApiParam @RequestBody String payload) {
 	    try {
-	    	String response = pnpService.pnpClaim();
+	    	String response = pnpService.pnpClaim(payload);
 	    	logger.info(response);
 	    	return response;
 	    } catch (Exception e) {
@@ -90,5 +94,6 @@ public class DNACPNPController {
 	    return null;
 	}
 
+	
 
 }
