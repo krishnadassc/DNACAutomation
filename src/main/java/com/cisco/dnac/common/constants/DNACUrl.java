@@ -29,4 +29,6 @@ public interface DNACUrl {
 	String TEMPLATE_URL= "dna/intent/api/v1/template-programmer/template/";
 	
 	String DEVICE_CLAIM_STATUS = "dna/intent/api/v1/onboarding/pnp-device/";
+	
+	String NETWORK_DEVICE = "/api/v1/network-device";
 }

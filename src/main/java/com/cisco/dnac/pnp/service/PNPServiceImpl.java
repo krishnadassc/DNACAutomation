@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -123,18 +125,23 @@ public class PNPServiceImpl implements PnpService {
 
 	}
 
-	public boolean getDeviceClaimStatus(String deviceId) {
+	public String getDeviceClaimStatus(String serialNumber) {
 		// TODO Auto-generated method stub
-		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.DEVICE_CLAIM_STATUS+deviceId);
+		//ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.DEVICE_CLAIM_STATUS+deviceId);
+		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.NETWORK_DEVICE+"?serialNumber="+serialNumber);
 		if(response.getStatusCodeValue() == 200) {
-			//if status == claimed
-			return true;
+			
+			JSONObject jObj= new JSONObject(response.getBody()).getJSONArray("response").getJSONObject(0);
+			String instanceuuid = jObj.getString("instanceUuid");
+			return instanceuuid;	
 		} 
-		return false;
+		return null;
 	}
 	
 	public String onboard() {
 
+		List<DeviceInfo> devIndoList = new ArrayList<>();
+		List<DeviceInfo> devFailList = new ArrayList<>();
 		try {
 
 			List<Map<String, String>> data = PNPUtil.readObjectsFromCsv(new File("src/main/resources/sample.csv"));
@@ -183,20 +190,10 @@ public class PNPServiceImpl implements PnpService {
 					String status = pnpClaim(obj.getAsString());
 
 					if ("Device claimed".equals(status)) {
-
-						try {
-					        while (true) {
-					            if(getDeviceClaimStatus(uuid)) {
-					            	break; 
-					            }
-					            Thread.sleep(10 * 1000);
-					        }
-					    } catch (InterruptedException e) {
-					        e.printStackTrace();
-					    }
-
+						devIndoList.add(deviceInfo);
+						
 					} else {
-
+						devFailList.add(deviceInfo);
 						System.out.println("failed");
 
 					}
@@ -204,7 +201,7 @@ public class PNPServiceImpl implements PnpService {
 					
 				}
 			}
-
+			
 		} catch (IOException e) {
 
 			// TODO Auto-generated catch block
@@ -212,8 +209,26 @@ public class PNPServiceImpl implements PnpService {
 			e.printStackTrace();
 
 		}
-
+		doDeviceprov(devIndoList);
 		return null;
+
+	}
+	
+	public void doDeviceprov(List<DeviceInfo> devIndoList) {
+		try {
+	        while (devIndoList.size()>0) {
+	        	for(DeviceInfo info: devIndoList) {
+		            if(getDeviceClaimStatus(info.getSerialNumber()).equals("")) {
+		            	devIndoList.remove(info);
+		            	//doProv();
+		            }
+	        	}
+
+	            Thread.sleep(10 * 1000);
+	        }
+	    } catch (InterruptedException e) {
+	        e.printStackTrace();
+	    }
 
 	}
 
