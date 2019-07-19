@@ -179,6 +179,17 @@ public class SiteServiceImpl implements SiteService{
 		
 	}
 
+	public SiteProfileEntity getSiteProfileBySiteUuid(String siteUuid) {
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(DNACUrl.SITE_PROFILE_URL)
+                .queryParam("siteUuid", siteUuid);
+		ResponseEntity<String> response =  restClient.exchange(uriBuilder.toUriString(), HttpMethod.GET, DNACUrl.SITE_PROFILE_URL);
+		if(response.getStatusCodeValue() == 200) {
+			JSONArray jArray = new JSONObject(response.getBody()).getJSONArray("response");
+			if(jArray.length() > 0) {
+				 return new GsonBuilder().create().fromJson(jArray.toString(), SiteProfileEntity.class);
+			}					
+		return null;
+	}
 //    public void saveAllSites() {
 //    	String sites = getAllSites();        	
 //    	if(!sites.equals(null) || !sites.equals("")) {

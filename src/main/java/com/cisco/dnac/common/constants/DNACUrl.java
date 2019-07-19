@@ -23,4 +23,6 @@ public interface DNACUrl {
 	String DEVICE_URL = "dna/intent/api/v1/network-device";
 	
 	String MEMBER_GROUP_URL= "dna/intent/api/v1/member/group";
+	
+	String SITE_PROFILE_URL= "dna/intent/api/v1/siteprofile/site";
 }
