@@ -7,14 +7,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.cisco.dnac.cfs.service.CFSService;
 import com.cisco.dnac.common.Util.RestClient;
 import com.cisco.dnac.common.constants.DNACUrl;
+import com.cisco.dnac.common.entity.DeviceProvisioningInfo;
 import com.cisco.dnac.common.entity.SiteEntity;
 import com.cisco.dnac.common.entity.SiteProfileAttribute;
 import com.cisco.dnac.common.entity.SiteProfileEntity;
@@ -31,9 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.internal.Excluder;
 
 @Service
 
@@ -46,9 +49,11 @@ public class PNPServiceImpl implements PnpService {
 	private RestClient restClient;
 
 	@Autowired
-
 	private SiteService siteService;
 
+	@Autowired
+	private CFSService cfsService;
+	
 	private Logger logger = Logger.getLogger(PNPServiceImpl.class);
 
 	@Autowired
@@ -125,8 +130,35 @@ public class PNPServiceImpl implements PnpService {
 
 	}
 
+	public String getDeviceClaimStatus(String serialNumber) {
+		// TODO Auto-generated method stub
+		//ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.DEVICE_CLAIM_STATUS+deviceId);
+		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.NETWORK_DEVICE+"?serialNumber="+serialNumber);
+		if(response.getStatusCodeValue() == 200) {
+			
+			JSONObject jObj= new JSONObject(response.getBody());
+			JSONArray arr = jObj.getJSONArray("response");
+			if(arr.length()>0) {
+				JSONObject dev = arr.getJSONObject(0);
+				System.out.println(jObj);
+				String status = jObj.getString("collectionStatus");
+				if("Managed".equals(status)){
+					String instanceuuid = dev.getString("instanceUuid");
+					
+					return instanceuuid;
+				}
+									
+			}
+					
+		} 
+		return null;
+	}
+	
 	public String onboard() {
 
+		List<DeviceInfo> devIndoList = new ArrayList();
+		List<DeviceInfo> devFailList = new ArrayList();
+		SiteEntity siteEntity = null;
 		try {
 
 			List<Map<String, String>> data = PNPUtil.readObjectsFromCsv(new File("src/main/resources/sample.csv"));
@@ -135,7 +167,7 @@ public class PNPServiceImpl implements PnpService {
 
 				String templateName = deviceData.get("siteName");
 
-				SiteEntity siteEntity = siteService.getSiteByGroupHierarchyName(deviceData.get("siteName"));
+				siteEntity = siteService.getSiteByGroupHierarchyName(deviceData.get("siteName"));
 
 				SiteProfileEntity siteProfileEntity = siteService.getSiteProfileBySiteUuid(siteEntity.getId());
 				if(siteProfileEntity != null) {
@@ -158,25 +190,76 @@ public class PNPServiceImpl implements PnpService {
 				try {
 					node1 = mapper1.readValue(resp, ObjectNode.class);
 				}catch (Exception e) {
-					e.printStackTrace();
+					logger.info("check !!!!!!!!1");
 				}
 				ArrayNode successArr = (ArrayNode) node1.get("successList");
 				if(successArr.size()>0) {
 					prepareClaim(siteEntity, successArr);
+					String uuid = successArr.get(0).get("id").toString();
+					System.out.println("---------------------"+uuid);
+					JsonObject obj = new JsonObject();
 
+					obj.addProperty("siteId", siteEntity.getId());
+
+					obj.addProperty("deviceId", uuid);
+
+					obj.addProperty("type", "Default");
+
+					String status = pnpClaim(obj.toString());
+					System.out.println("pnpClaim status---------------------"+status+" =>"+deviceInfo.getSerialNumber());
+					if ("Device claimed".equals(status)) {
+						devIndoList.add(deviceInfo);
+						
+					} else {
+						devFailList.add(deviceInfo);
+						System.out.println("failed");
+
+					}
 					
 				}
 			}
-
+			
 		} catch (IOException e) {
 
 			// TODO Auto-generated catch block
 
-			e.printStackTrace();
+			logger.info("check !!!!!!!!2");
 
 		}
-
+		doDeviceprov(devIndoList, siteEntity);
 		return null;
+
+	}
+	
+	public void doDeviceprov(List<DeviceInfo> devIndoList, SiteEntity siteEntity) {
+		try {
+			int count =0;
+	        while (devIndoList.size()>0 && count<60) {
+	        	count++;
+	        	for(DeviceInfo info: devIndoList) {
+	        		logger.info(info.getSerialNumber()+ "retry");
+		            String uuid = getDeviceClaimStatus(info.getSerialNumber());
+					if(uuid != null ) {
+		            	devIndoList.remove(info);
+		            	DeviceProvisioningInfo deviceInfo = new DeviceProvisioningInfo();
+		            	deviceInfo.setNetworkDeviceId(uuid);
+		            	deviceInfo.setSiteId(siteEntity.getId());
+		            	System.out.println("init prov--------------------- =>"+info.getSerialNumber());
+						cfsService.provisionDevice(deviceInfo );
+		            	try {
+		            		Thread.sleep(5*1000);
+		            	}catch (Exception e) {
+							
+						}
+		            	
+		            }
+	        	}
+
+	            Thread.sleep(10 * 1000);
+	        }
+	    } catch (InterruptedException e) {
+	    	logger.info("check !!!!!!!!3");
+	    }
 
 	}
 
@@ -248,7 +331,7 @@ public class PNPServiceImpl implements PnpService {
 			
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.info("check !!!!!!!!4");
 		}
 		ObjectMapper mapper1 = new ObjectMapper();
 		ObjectNode node1 = null;
@@ -256,13 +339,13 @@ public class PNPServiceImpl implements PnpService {
 			node1 = mapper1.readValue(json, ObjectNode.class);
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.info("check !!!!!!!!6");
 		} catch (JsonMappingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.info("check !!!!!!!!7");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.info("check !!!!!!!!8");
 		}
 		ObjectNode node = mapper.createObjectNode();
 		
@@ -285,12 +368,17 @@ public class PNPServiceImpl implements PnpService {
 
 	public String pnpClaim(String payload) {
 
-		ResponseEntity<String> response = restClient.exchange(payload, HttpMethod.POST, DNACUrl.PNP_CLAIM);
+		try {
+			ResponseEntity<String> response = restClient.exchange(payload, HttpMethod.POST, DNACUrl.PNP_CLAIM);
+			System.out.println(response);
+			if (response.getStatusCodeValue() == 200)
 
-		if (response.getStatusCodeValue() == 200)
+				return response.getBody();
 
-			return response.getBody();
-
+		}catch (Exception e) {
+			return "";
+		}
+		
 		return "";
 
 	}
@@ -304,7 +392,7 @@ public class PNPServiceImpl implements PnpService {
 	public String pnpDevices() {
 
 		ResponseEntity<String> response = restClient.exchange(null, HttpMethod.GET, DNACUrl.PNP_DEVICES);
-
+		System.out.println("pnpdevice "+response);
 		if (response.getStatusCodeValue() == 200)
 
 			return response.getBody();
@@ -314,8 +402,6 @@ public class PNPServiceImpl implements PnpService {
 	}
 
 	public void execute() {
-
-		// Needs to Implement the hook ...
 		onboard();
 		logger.info("Invoked PNP Service ... ");
 
