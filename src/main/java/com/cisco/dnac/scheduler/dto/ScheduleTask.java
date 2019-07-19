@@ -1,8 +1,10 @@
 package com.cisco.dnac.scheduler.dto;
 
+import org.bson.types.ObjectId;
+
 public class ScheduleTask {
 
-	private int id = -1;
+	private ObjectId id;
 	private String taskName=SchedulerConstants.PNPSERVICE;
 	private String description="";
 	private long timeInMilliseconds;
@@ -41,11 +43,11 @@ public class ScheduleTask {
 		this.taskDetails = taskDetails;
 	}
 
-	public int getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 

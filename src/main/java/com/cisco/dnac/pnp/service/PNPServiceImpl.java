@@ -29,37 +29,7 @@ public class PNPServiceImpl implements PnpService{
 	
 	private static final Logger logger = Logger.getLogger(WorkflowInvoker.class);
 	
-	/* Steps
-	 * 1. get the site info with name
-	 * 2. find site template
-	 * 3. get template params
-	 * 4. Add device
-	 * 5. claim device
-	 * 
-	 */	
-<<<<<<< HEAD
-=======
-	
-	
-	public String onboard() {
-		try {
-			 List<Map<?, ?>> data = PNPUtil.readObjectsFromCsv(new File("src/main/resources/sample.csv"));
-			 for (Map<?, ?> deviceData : data) {
-				 String siteId = getSiteId();
-				 String configId = gettemplateName(siteId);
-				 String params = getTemplate(configId, deviceData);
-				 String uuid = addDevice();
-				 String status = claimDevice();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public String findTemplateName(List<Object> data, templateName) {
->>>>>>> 5147f10057be144bd119254ea336c01281b61eb4
+
 
 	
 	public String pnpStatus(String serialNo) {
@@ -99,18 +69,18 @@ public class PNPServiceImpl implements PnpService{
 	}
 
 	@Override
-<<<<<<< HEAD
 	public String onboard() {
 		// TODO Auto-generated method stub
 		return null;
-=======
-	public void execute() {
-		// Needs to Implement the hook ... 
-		
-		logger.info("Invoked PNP Service ... ");
-		
-		
->>>>>>> 5147f10057be144bd119254ea336c01281b61eb4
 	}
+
+	@Override
+	public void execute() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
 
 }

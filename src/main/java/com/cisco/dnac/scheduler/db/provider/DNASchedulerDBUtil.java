@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -60,9 +61,10 @@ public class DNASchedulerDBUtil {
 			task.setTaskDetails(scheduleTask.getTaskDetails());
 			task.setTaskName(scheduleTask.getTaskName());
 			task.setTimeInMilliSeconds(scheduleTask.getTimeInMilliseconds());
-
 			// enataraj : Need actual id.
-			dao.create(task);
+			dao.save(task);
+			logger.info("TaskId------"+task.getId());
+			
 
 		} catch (Exception e) {
 			logger.error("Exception while create task ", e);
@@ -70,11 +72,13 @@ public class DNASchedulerDBUtil {
 		return task;
 	}
 
-	public void updateSchedulerTask(int id, String status) {
+	public void updateSchedulerTask(ObjectId taskId, String status) {
 		try {
+			logger.info("-----------"+taskId);
 			Query query = new Query();
-			query.addCriteria(Criteria.where("id").is(id));
+			query.addCriteria(Criteria.where("_id").is(taskId));
 			dao.updateAll(query, new Update().set("status", status), ScheduleTaskDAO.class);
+			logger.info("-----------"+taskId);
 			logger.info("Status is updated into table : " + status);
 
 		} catch (Exception e) {

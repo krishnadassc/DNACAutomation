@@ -1,6 +1,7 @@
 package com.cisco.dnac.scheduler.service;
 
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,38 @@ public class WorkflowInvoker implements Runnable {
 
 	private static final Logger logger = Logger.getLogger(WorkflowInvoker.class);
 	private String taskName;
-	private int taskId;
-	@Autowired
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	public ObjectId getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(ObjectId taskId) {
+		this.taskId = taskId;
+	}
+
+	private ObjectId taskId;
+	
 	private PnpService pnpServiceInstance;
 
-	@Autowired
+	public void setPnpServiceInstance(PnpService pnpServiceInstance) {
+		this.pnpServiceInstance = pnpServiceInstance;
+	}
+
 	private DNASchedulerDBUtil dbutil;
 
-	public WorkflowInvoker(String taskName, int taskId) {
-		this.taskName = taskName;
-		this.taskId = taskId;
+	public void setDbutil(DNASchedulerDBUtil dbutil) {
+		this.dbutil = dbutil;
+	}
+
+	public WorkflowInvoker() {
 
 	}
 
@@ -38,12 +61,10 @@ public class WorkflowInvoker implements Runnable {
 				logger.warn("Un Implemented Service .... " + taskName);
 			}
 
-		} catch (Exception e) {
-			logger.error("Exception while running the task ... " + taskName);
-			dbutil.updateSchedulerTask(taskId, SchedulerConstants.FAILED);
-			logger.error("Error ", e);
+		} catch (Exception e) {			
+			logger.error("Exception while running the task ... " + taskName + "TaskId  "+taskId);
 
-		}
+		}		
 	}
 
 }

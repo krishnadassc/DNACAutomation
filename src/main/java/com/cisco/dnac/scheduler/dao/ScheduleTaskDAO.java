@@ -1,5 +1,6 @@
 package com.cisco.dnac.scheduler.dao;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.cisco.dnac.common.entity.DNACEntity;
@@ -9,7 +10,7 @@ public class ScheduleTaskDAO implements DNACEntity {
 
 	private static final long serialVersionUID = 4982772884472469974L;
 
-	private int id;
+	private ObjectId id;
 
 	private String taskName;
 
@@ -21,11 +22,11 @@ public class ScheduleTaskDAO implements DNACEntity {
 
 	private String taskDetails;
 
-	public int getId() {
+	public ObjectId getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 
