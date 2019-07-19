@@ -12,6 +12,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -51,6 +53,20 @@ public class DNACRestClientUtil implements RestClient{
 			String urlVal = "https://"+host+"/"+url;
 			logger.info(urlVal	);
 			RequestEntity<String> reqEntity = new RequestEntity<String>(body, method, new URI(urlVal));
+			if(method == HttpMethod.POST )
+				reqEntity.getHeaders().add("Content-Type", "application/json");
+			ResponseEntity<String> respEntity = getRestTemplate().exchange(reqEntity, String.class);
+			return respEntity;			
+		}catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public ResponseEntity<String> exchange(String body, HttpMethod method, String url, MultiValueMap<String, String> headerMap) {
+		try {
+			String urlVal = "https://"+host+"/"+url;
+			logger.info(urlVal	);
+			RequestEntity<String> reqEntity = new RequestEntity<String>(body, headerMap, method, new URI(urlVal));
 			ResponseEntity<String> respEntity = getRestTemplate().exchange(reqEntity, String.class);
 			return respEntity;			
 		}catch (Exception e) {

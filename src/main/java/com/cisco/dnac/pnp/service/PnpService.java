@@ -8,7 +8,7 @@ public interface PnpService {
 	
 	public String pnpDevices();
 	
-	public String pnpImport() ;
+	public String pnpImport(String payload) ;
 	
 	public String pnpClaim() ;
 

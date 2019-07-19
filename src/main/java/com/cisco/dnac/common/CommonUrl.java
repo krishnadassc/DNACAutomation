@@ -12,15 +12,18 @@ public interface CommonUrl {
 
 	String PNP_AUTOMATE_URL = BASE_URL + "/onboard";
 
-	String PNP_STATUS =  "/status";
-	
-	String PNP_DEVICES =  "/devices";
+	String PNP_STATUS = "/status";
+
+	String PNP_DEVICES = "/devices";
 
 	String PNP_IMPORT = "/import";
 
 	String PNP_CLAIM = "/claim";
 
 	String SITE_URL = "/site";
-	
+
 	String SCHEDULER_URL = "/schedule";
+
+	String CFS_URL = BASE_URL + "/cfs";
+
 }
