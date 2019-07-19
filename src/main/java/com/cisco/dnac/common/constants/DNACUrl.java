@@ -19,4 +19,8 @@ public interface DNACUrl {
 	String PNP_CLAIM = "dna/intent/api/v1/onboarding/pnp-device/site-claim";
 	
 	String PNP_DEVICES = "dna/intent/api/v1/onboarding/pnp-device";
+	
+	String DEVICE_URL = "dna/intent/api/v1/network-device";
+	
+	String MEMBER_GROUP_URL= "dna/intent/api/v1/member/group";
 }
