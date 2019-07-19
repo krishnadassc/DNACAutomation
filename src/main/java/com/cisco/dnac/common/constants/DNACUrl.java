@@ -3,6 +3,8 @@ package com.cisco.dnac.common.constants;
 public interface DNACUrl {
 	
 	String SITE_URL = "dna/intent/api/v1/topology/site-topology";
+
+	String GET_DEVICE_INFO_URL = "api/v2/data/customer-facing-service/DeviceInfo";
 	
 	String TEMPLATE_PREVIEW = "template-programmer/template/preview";
 	
@@ -17,5 +19,4 @@ public interface DNACUrl {
 	String PNP_CLAIM = "dna/intent/api/v1/onboarding/pnp-device/site-claim";
 	
 	String PNP_DEVICES = "dna/intent/api/v1/onboarding/pnp-device";
-
 }
