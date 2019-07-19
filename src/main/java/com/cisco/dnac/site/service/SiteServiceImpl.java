@@ -176,9 +176,7 @@ public class SiteServiceImpl implements SiteService{
 	}
 
 	public SiteProfileEntity getSiteProfileBySiteUuid(String siteUuid) {
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(DNACUrl.SITE_PROFILE_URL)
-                .queryParam("siteUuid", siteUuid);
-		ResponseEntity<String> response =  restClient.exchange(uriBuilder.toUriString(), HttpMethod.GET, DNACUrl.SITE_PROFILE_URL);
+		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.SITE_PROFILE_URL+"/"+siteUuid);
 		if(response.getStatusCodeValue() == 200) {
 			JSONArray jArray = new JSONObject(response.getBody()).getJSONArray("response");
 			if(jArray.length() > 0) {

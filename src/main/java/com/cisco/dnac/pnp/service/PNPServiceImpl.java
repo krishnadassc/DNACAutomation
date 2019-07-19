@@ -24,6 +24,12 @@ import com.cisco.dnac.template.entity.TemplateDetails;
 import com.cisco.dnac.template.entity.TemplateParam;
 import com.cisco.dnac.template.entity.TemplateParams;
 import com.cisco.dnac.template.service.TemplateService;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -117,6 +123,16 @@ public class PNPServiceImpl implements PnpService {
 
 	}
 
+	public boolean getDeviceClaimStatus(String deviceId) {
+		// TODO Auto-generated method stub
+		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.DEVICE_CLAIM_STATUS+deviceId);
+		if(response.getStatusCodeValue() == 200) {
+			//if status == claimed
+			return true;
+		} 
+		return false;
+	}
+	
 	public String onboard() {
 
 		try {
@@ -129,38 +145,64 @@ public class PNPServiceImpl implements PnpService {
 
 				SiteEntity siteEntity = siteService.getSiteByGroupHierarchyName(deviceData.get("siteName"));
 
-				SiteProfileEntity siteProfileEntity = siteService.getSiteProfileBySiteUuid(siteEntity.getSiteId());
-
-				String configId = getTemplatePFName(siteProfileEntity.getProfileAttributes(), templateName);
-
-				TemplateDetails templateDetail = templateService.getTemplateByTemplateId(configId);
-
-				List<TemplateParams> templateparams = getTempalateParam(templateDetail, deviceData);
-
-				DeviceInfo deviceInfo = new DeviceInfo();
-
-				String uuid = pnpImport(deviceInfo);
-
-				JsonObject obj = new JsonObject();
-
-				obj.addProperty("siteId", siteEntity.getSiteId());
-
-				obj.addProperty("deviceId", uuid);
-
-				obj.addProperty("type", "Default");
-
-				String status = pnpClaim(obj.getAsString());
-
-				if ("claimed".equals(status)) {
-
-					System.out.println("success");
-
-				} else {
-
-					System.out.println("failed");
-
+				SiteProfileEntity siteProfileEntity = siteService.getSiteProfileBySiteUuid(siteEntity.getId());
+				if(siteProfileEntity != null) {
+					String configId = getTemplatePFName(siteProfileEntity.getProfileAttributes(), templateName);
+					
+					TemplateDetails templateDetail = templateService.getTemplateByTemplateId(configId);
+					
+					List<TemplateParams> templateparams = getTempalateParam(templateDetail, deviceData);
+					
 				}
 
+				DeviceInfo deviceInfo = new DeviceInfo();
+				deviceInfo.setSerialNumber(deviceData.get("serial"));
+				deviceInfo.setName(deviceData.get("name"));
+				deviceInfo.setPid(deviceData.get("pid"));
+				deviceInfo.setHostname(deviceData.get("hostname"));
+				String resp = pnpImport(deviceInfo);
+				ObjectMapper mapper1 = new ObjectMapper();
+				ObjectNode node1 = null;
+				try {
+					node1 = mapper1.readValue(resp, ObjectNode.class);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+				ArrayNode successArr = (ArrayNode) node1.get("successList");
+				if(successArr.size()>0) {
+					String uuid = successArr.get(0).get("id").toString();
+					System.out.println("---------------------"+uuid);
+					JsonObject obj = new JsonObject();
+
+					obj.addProperty("siteId", siteEntity.getId());
+
+					obj.addProperty("deviceId", uuid);
+
+					obj.addProperty("type", "Default");
+
+					String status = pnpClaim(obj.getAsString());
+
+					if ("Device claimed".equals(status)) {
+
+						try {
+					        while (true) {
+					            if(getDeviceClaimStatus(uuid)) {
+					            	break; 
+					            }
+					            Thread.sleep(10 * 1000);
+					        }
+					    } catch (InterruptedException e) {
+					        e.printStackTrace();
+					    }
+
+					} else {
+
+						System.out.println("failed");
+
+					}
+
+					
+				}
 			}
 
 		} catch (IOException e) {
@@ -207,10 +249,39 @@ public class PNPServiceImpl implements PnpService {
 	}
 
 	public String pnpImport(DeviceInfo payload) {
-
-		String requestBody = "[" + gson.toJson(payload) + "]";
-
-		ResponseEntity<String> response = restClient.exchange(requestBody, HttpMethod.POST, DNACUrl.PNP_IMPORT);
+		String json= "";
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(payload);
+			
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ObjectMapper mapper1 = new ObjectMapper();
+		ObjectNode node1 = null;
+		try {
+			node1 = mapper1.readValue(json, ObjectNode.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ObjectNode node = mapper.createObjectNode();
+		
+		node.set("deviceInfo", node1);
+		ObjectMapper mapper2 = new ObjectMapper();
+		ArrayNode arr = mapper2.createArrayNode();
+		arr.add(node);
+		System.out.println(arr.toString());
+		System.out.println(arr.textValue());
+		System.out.println( arr.asText());
+		ResponseEntity<String> response = restClient.exchange(arr.toString(), HttpMethod.POST, DNACUrl.PNP_IMPORT);
 
 		if (response.getStatusCodeValue() == 200)
 
@@ -251,6 +322,7 @@ public class PNPServiceImpl implements PnpService {
 	}
 
 	public void execute() {
+		onboard();
 		logger.info("Invoked PNP Service ... ");
 
 	}

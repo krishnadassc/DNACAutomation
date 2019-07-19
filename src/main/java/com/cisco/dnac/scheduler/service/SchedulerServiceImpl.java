@@ -36,6 +36,7 @@ public class SchedulerServiceImpl implements SchedulerService {
 		// invoke schedule job
 		String taskUniqueName = scheduleTask.getTaskName() + "-" + scheduleTask.getId();
 		long scheduledTimeInMilliSec = scheduleTask.getTimeInMilliseconds();
+		System.out.println("TIMEEEEEEEEE----"+scheduledTimeInMilliSec);
 		invoker.setDbutil(dbutil);
 		invoker.setPnpServiceInstance(pnpServiceInstance);
 		invoker.setTaskId(schDao.getId());
