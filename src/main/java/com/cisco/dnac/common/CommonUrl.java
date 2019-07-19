@@ -21,4 +21,6 @@ public interface CommonUrl {
 	String PNP_CLAIM = "/claim";
 
 	String SITE_URL = "/site";
+	
+	String CFS_URL = BASE_URL+"/cfs";
 }
