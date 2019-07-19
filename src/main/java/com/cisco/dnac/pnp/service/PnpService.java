@@ -1,5 +1,7 @@
 package com.cisco.dnac.pnp.service;
 
+import com.cisco.dnac.pnp.entity.DeviceInfo;
+
 public interface PnpService {
 
 	public String onboard();
@@ -8,10 +10,10 @@ public interface PnpService {
 	
 	public String pnpDevices();
 	
-	public String pnpImport(String payload) ;
+	public String pnpImport(DeviceInfo payload);
 	
-	public String pnpClaim() ;
-	
+	public String pnpClaim(String payload);
+
 	public void execute();
 
 }

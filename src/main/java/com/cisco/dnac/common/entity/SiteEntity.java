@@ -1,15 +1,18 @@
 package com.cisco.dnac.common.entity;
 
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 public class SiteEntity implements DNACEntity{
+	public SiteEntity() {
+		
+	}
+
 	private ObjectId id;
 	private String siteId;
     private String siteName;
     private String parentId;
-    private float latitude;
-    private float longitude;
+    private String latitude;
+    private String longitude;
     private String locationType;
     private String locationAddress;
     private String locationCountry;
@@ -41,16 +44,16 @@ public class SiteEntity implements DNACEntity{
 	public void setParentId(String parentId) {
 		this.parentId = parentId;
 	}
-	public float getLatitude() {
+	public String getLatitude() {
 		return latitude;
 	}
-	public void setLatitude(float latitude) {
+	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
-	public float getLongitude() {
+	public String getLongitude() {
 		return longitude;
 	}
-	public void setLongitude(float longitude) {
+	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
 	public String getLocationType() {

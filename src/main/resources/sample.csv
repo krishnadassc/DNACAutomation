@@ -1,2 +1,2 @@
 name,serial,pid,siteName,templateName,hostname,loopback,template_attr1, template_attr2
-pnp_dev1,12345678901,WS-C3650,Global/San Jose,basic,Edge 4,10.10.100.200,template1,template2
+pnp_dev1,FDO2151Q2GP,WS-C3650-24PS,Global/San Jose/Bld 4,basic,Edge 4,10.10.100.200,template1,template2

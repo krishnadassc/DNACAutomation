@@ -30,7 +30,6 @@ public class SchedulerServiceImpl implements SchedulerService {
 	private PnpService pnpServiceInstance;
 	
 
-	@Override
 	public void createSchedulerTask(ScheduleTask scheduleTask) {
 		invoker = new WorkflowInvoker();
 		ScheduleTaskDAO schDao = dbutil.createSchedulerTask(scheduleTask);
@@ -46,20 +45,18 @@ public class SchedulerServiceImpl implements SchedulerService {
 		
 	}
 
-	@Override
 	public void deleteScheduledTask(String taskId) {
 		dbutil.deleteScheduledTask(taskId);
 
 	}
 
-	@Override
 	public List<ScheduleTask> getScheduledTask() {
 		List<ScheduleTaskDAO> list = dbutil.getScheduledTaskList();
 		if (list == null || list.size() == 0) {
 			return null;
 		}
 
-		List<ScheduleTask> taskList = new ArrayList<>();
+		List<ScheduleTask> taskList = new ArrayList();
 		for (int i = 0; i < list.size(); i++) {
 			ScheduleTaskDAO taskDao = list.get(i);
 			ScheduleTask task = new ScheduleTask();

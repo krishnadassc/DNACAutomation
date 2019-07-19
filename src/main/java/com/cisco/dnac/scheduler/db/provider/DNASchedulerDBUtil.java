@@ -35,7 +35,7 @@ public class DNASchedulerDBUtil {
 	}
 
 	public List<ScheduleTask> convertDaoToDtO(List<ScheduleTaskDAO> list) {
-		List<ScheduleTask> taskList = new ArrayList<>();
+		List<ScheduleTask> taskList = new ArrayList();
 		for (int i = 0; i < list.size(); i++) {
 			ScheduleTaskDAO taskDao = list.get(i);
 			ScheduleTask task = new ScheduleTask();

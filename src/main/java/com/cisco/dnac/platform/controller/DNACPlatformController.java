@@ -10,6 +10,4 @@ import com.cisco.dnac.common.CommonUrl;
 public class DNACPlatformController {
 
 
-	
-
 }
