@@ -1,6 +1,5 @@
 package com.cisco.dnac.scheduler;
 
-import java.lang.management.ManagementFactory;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,13 +9,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
-
 import org.apache.log4j.Logger;
 
-public class MyScheduledExecutorService
-		implements MyScheduledExecutorServiceMBean, Comparable<MyScheduledExecutorService> {
+public class MyScheduledExecutorService implements Comparable<MyScheduledExecutorService> {
 	private static final Logger logger = Logger.getLogger(MyScheduledExecutorService.class);
 	private ScheduledExecutorService scheduledExecutorService;
 	private static final int DEFAULT_COREPOOL_SIZE = 10;
@@ -36,53 +31,13 @@ public class MyScheduledExecutorService
 		this.name = pName;
 		this.corePoolSize = pCorePoolSize;
 		this.scheduledExecutorService = Executors.newScheduledThreadPool(this.corePoolSize);
-		try {
-			MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-			ObjectName name = new ObjectName("com.cisco.cloupia.jmx:type=MyScheduledExecutorServiceMBean-" + pName);
-			mbs.registerMBean(this, name);
-		} catch (Exception e) {
-			logger.warn("Failed to register MyScheduledExecutorService with MBeanServer", e);
-		}
+
 	}
 
-	public void scheduleAtFixedRate(SystemTaskExecutor systemTaskExecutor, long initialDelay, long period,
-			TimeUnit unit) {
-		ScheduledFuture<?> scheduledFuture = this.scheduledExecutorService.scheduleAtFixedRate(systemTaskExecutor,
-				initialDelay, period, unit);
-		taskExecutors.put(systemTaskExecutor.getTaskName(), scheduledFuture);
-	}
-
-	public void scheduleAtFixedRate(Runnable theRunnable, String taskName, long initialDelay, long period,
-			TimeUnit unit) {
-		ScheduledFuture<?> scheduledFuture = this.scheduledExecutorService.scheduleAtFixedRate(theRunnable,
-				initialDelay, period, unit);
-		taskExecutors.put(taskName, scheduledFuture);
-	}
-
-	public void scheduleWithFixedDelay(SystemTaskExecutor systemTaskExecutor, long initialDelay, long period,
-			TimeUnit unit) {
-		ScheduledFuture<?> scheduledFuture = this.scheduledExecutorService.scheduleWithFixedDelay(systemTaskExecutor,
-				initialDelay, period, unit);
-		taskExecutors.put(systemTaskExecutor.getTaskName(), scheduledFuture);
-	}
-
-	public void scheduleWithFixedDelay(Runnable theRunnable, String taskName, long initialDelay, long period,
-			TimeUnit unit) {
-		ScheduledFuture<?> scheduledFuture = this.scheduledExecutorService.scheduleAtFixedRate(theRunnable,
-				initialDelay, period, unit);
-		taskExecutors.put(taskName, scheduledFuture);
-	}
-
-	public void scheduleNow(SystemTaskExecutor systemTaskExecutor) {
-		this.scheduledExecutorService.submit(systemTaskExecutor);
-	}
-
-	public Future scheduleNow(Runnable theRunnable) {
-		return this.scheduledExecutorService.submit(theRunnable);
-	}
-
-	public Future sheduleNow(String taskName, Runnable theRunnable) {
-		ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) this.scheduledExecutorService.submit(theRunnable);
+	public Future sheduleTask(String taskName, Runnable theRunnable, long scheduleTime) {
+		long delay = scheduleTime - System.currentTimeMillis();
+		ScheduledFuture<?> scheduledFuture = (ScheduledFuture<?>) this.scheduledExecutorService.schedule(theRunnable,
+				delay, TimeUnit.MILLISECONDS);
 		this.taskExecutors.put(taskName, scheduledFuture);
 		cleanUpTaskExecutors();
 		return scheduledFuture;

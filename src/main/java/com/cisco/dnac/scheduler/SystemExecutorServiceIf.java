@@ -1,10 +1,8 @@
 package com.cisco.dnac.scheduler;
 
-import java.util.TimerTask;
 import java.util.concurrent.Future;
 
 public interface SystemExecutorServiceIf {
-	Future<?> runNow(String name, TimerTask task);
+	Future<?> sheduleTask(String taskName, Runnable runnable, long scheduledTimeInMilliSec);
 
-	Future<?> runNow(String name, Runnable theRunnable);
 }
