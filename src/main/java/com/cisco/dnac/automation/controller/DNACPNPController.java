@@ -36,7 +36,7 @@ public class DNACPNPController {
 		try {
 			pnpService.onboard();
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return null;
 	}

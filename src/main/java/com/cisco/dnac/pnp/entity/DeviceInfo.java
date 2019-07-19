@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.parsing.Location;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class DeviceInfo {
 	 AaaCredentials AaaCredentialsObject;
 	 private String addedOn;

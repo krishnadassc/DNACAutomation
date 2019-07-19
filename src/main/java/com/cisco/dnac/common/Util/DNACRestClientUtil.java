@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -52,9 +53,9 @@ public class DNACRestClientUtil implements RestClient{
 		try {
 			String urlVal = "https://"+host+"/"+url;
 			logger.info(urlVal	);
-			RequestEntity<String> reqEntity = new RequestEntity<String>(body, method, new URI(urlVal));
-			if(method == HttpMethod.POST )
-				reqEntity.getHeaders().add("Content-Type", "application/json");
+			HttpHeaders header = new HttpHeaders();
+			header.add("Content-Type", "application/json");
+			RequestEntity<String> reqEntity = new RequestEntity<String>(body, header,method, new URI(urlVal));
 			ResponseEntity<String> respEntity = getRestTemplate().exchange(reqEntity, String.class);
 			return respEntity;			
 		}catch (Exception e) {

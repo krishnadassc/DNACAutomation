@@ -24,7 +24,7 @@ public interface DNACUrl {
 	
 	String MEMBER_GROUP_URL= "dna/intent/api/v1/member/group";
 	
-	String SITE_PROFILE_URL= "dna/intent/api/v1/siteprofile/site";
+	String SITE_PROFILE_URL= "api/v1/siteprofile/site";
 	
 	String TEMPLATE_URL= "dna/intent/api/v1/template-programmer/template/";
 }
