@@ -251,9 +251,6 @@ public class PNPServiceImpl implements PnpService {
 	}
 
 	public void execute() {
-
-		// Needs to Implement the hook ...
-
 		logger.info("Invoked PNP Service ... ");
 
 	}

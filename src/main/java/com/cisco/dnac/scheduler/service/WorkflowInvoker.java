@@ -56,6 +56,7 @@ public class WorkflowInvoker implements Runnable {
 				dbutil.updateSchedulerTask(taskId, SchedulerConstants.INPROGRSS);
 				pnpServiceInstance.execute();
 				dbutil.updateSchedulerTask(taskId, SchedulerConstants.COMPLETED);
+				
 			} else {
 				logger.warn("Un Implemented Service .... " + taskName);
 			}
