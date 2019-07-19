@@ -3,6 +3,7 @@ package com.cisco.dnac.site.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +16,7 @@ import com.cisco.dnac.common.Util.RestClient;
 import com.cisco.dnac.common.constants.DNACUrl;
 import com.cisco.dnac.common.entity.DeviceEntity;
 import com.cisco.dnac.common.entity.SiteEntity;
+import com.cisco.dnac.common.entity.SiteProfileEntity;
 import com.google.gson.GsonBuilder;
 
 @Service
@@ -176,8 +178,9 @@ public class SiteServiceImpl implements SiteService{
 			if(jArray.length() > 0) {
 				 return new GsonBuilder().create().fromJson(jArray.toString(), SiteProfileEntity.class);
 			}					
+		}
 		return null;
-	}
+	}	
 //    public void saveAllSites() {
 //    	String sites = getAllSites();        	
 //    	if(!sites.equals(null) || !sites.equals("")) {
