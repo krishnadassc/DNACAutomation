@@ -21,6 +21,10 @@ public interface CommonUrl {
 	String PNP_CLAIM = "/claim";
 
 	String SITE_URL = "/site";
+	
+	String SITE_PROFILE_URL = BASE_URL+"/siteprofile/site";
+	
+	String DEVICE_URL = BASE_URL+"/network-device";
 
 	String SCHEDULER_URL = "/schedule";
 

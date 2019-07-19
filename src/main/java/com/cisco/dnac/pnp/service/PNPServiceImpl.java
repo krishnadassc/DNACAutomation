@@ -37,6 +37,8 @@ public class PNPServiceImpl implements PnpService{
 	 * 5. claim device
 	 * 
 	 */	
+<<<<<<< HEAD
+=======
 	
 	
 	public String onboard() {
@@ -57,25 +59,8 @@ public class PNPServiceImpl implements PnpService{
 	}
 	
 	public String findTemplateName(List<Object> data, templateName) {
+>>>>>>> 5147f10057be144bd119254ea336c01281b61eb4
 
-	/*    for (attr : data){
-	        if ('key' in attr){
-	            if attr['key'] == 'day0.templates'{
-	                for dev in attr['attribs'] {
-	                    for template in dev['attribs'][0]['attribs'][0]['attribs'] {
-	                        if template['key'] == 'template.id'{
-	                            for templ_attrs in template['attribs'] {
-	                                if templ_attrs['key'] == 'template.name' and templ_attrs['value'] == templateName{
-	                                    return template['value']
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	        }
-	    }*/
-	}
 	
 	public String pnpStatus(String serialNo) {
 		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.PNP_STATUS+serialNo);
@@ -114,12 +99,18 @@ public class PNPServiceImpl implements PnpService{
 	}
 
 	@Override
+<<<<<<< HEAD
+	public String onboard() {
+		// TODO Auto-generated method stub
+		return null;
+=======
 	public void execute() {
 		// Needs to Implement the hook ... 
 		
 		logger.info("Invoked PNP Service ... ");
 		
 		
+>>>>>>> 5147f10057be144bd119254ea336c01281b61eb4
 	}
 
 }

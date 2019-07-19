@@ -3,7 +3,7 @@ package com.cisco.dnac.common.entity;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-public class SiteEntity {
+public class SiteEntity implements DNACEntity{
 	private ObjectId id;
 	private String siteId;
     private String siteName;
