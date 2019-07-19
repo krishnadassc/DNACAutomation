@@ -162,26 +162,7 @@ public class PNPServiceImpl implements PnpService {
 				}
 				ArrayNode successArr = (ArrayNode) node1.get("successList");
 				if(successArr.size()>0) {
-					String uuid = successArr.get(0).get("id").toString();
-					JsonObject obj = new JsonObject();
-
-					obj.addProperty("siteId", siteEntity.getId());
-
-					obj.addProperty("deviceId", uuid);
-
-					obj.addProperty("type", "Default");
-
-					String status = pnpClaim(obj.getAsString());
-
-					if ("claimed".equals(status)) {
-
-						System.out.println("success");
-
-					} else {
-
-						System.out.println("failed");
-
-					}
+					prepareClaim(siteEntity, successArr);
 
 					
 				}
@@ -197,6 +178,35 @@ public class PNPServiceImpl implements PnpService {
 
 		return null;
 
+	}
+
+	private void prepareClaim(SiteEntity siteEntity, ArrayNode successArr) {
+		String uuid = successArr.get(0).get("id").toString().replaceAll("\"", "");
+		JsonObject obj = new JsonObject();
+		JsonObject obj1 = new JsonObject();
+		obj1.addProperty("imageId", "");
+		obj1.addProperty("skip", false);
+		JsonObject obj2 = new JsonObject();
+		/*obj2.addProperty("configId", "");
+		obj2.addProperty("configParameters", "");*/
+		obj.addProperty("siteId", siteEntity.getId());
+		obj.addProperty("deviceId", uuid);
+		obj.addProperty("type", "Default");
+		obj.add("imageInfo", obj1);
+		obj.add("configInfo", obj2);
+		
+		System.out.println(obj.toString());
+		String status = pnpClaim(obj.toString());
+
+		if ("claimed".equals(status)) {
+
+			System.out.println("success");
+
+		} else {
+
+			System.out.println("failed");
+
+		}
 	}
 
 	private List<TemplateParams> getTempalateParam(TemplateDetails templateDetail, Map<String, String> data) {

@@ -32,7 +32,7 @@ public class DNACPNPController {
 	private Logger logger = Logger.getLogger(DNACPNPController.class);
 	@RequestMapping(value = CommonUrl.PNP_AUTOMATE_URL, method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	@ResponseBody
-	public String doPNP(@ApiParam @RequestBody String payload) {
+	public String doPNP() {
 		try {
 			pnpService.onboard();
 		} catch (Exception e) {
