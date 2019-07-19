@@ -1,6 +1,5 @@
 package com.cisco.dnac.cfs.service;
 
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -27,7 +26,6 @@ public class CFSServiceImpl implements CFSService {
 	private Gson gson = new Gson();
 	DeviceProvisioningInfo[] targetArray;
 	
-	@Override
 	public String getAllDeviceInfo() {
 		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.GET_DEVICE_INFO_URL);
 		if(response.getStatusCodeValue() == 200) {
@@ -47,7 +45,6 @@ public class CFSServiceImpl implements CFSService {
 	}
 	//?networkDeviceId=
 
-	@Override
 	public DeviceProvisioningInfo getDeviceInfoByNetworkDeviceId(String networkDeviceId) {
 		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, 
 				DNACUrl.GET_DEVICE_INFO_URL + "?networkDeviceId=" + networkDeviceId );
@@ -66,7 +63,6 @@ public class CFSServiceImpl implements CFSService {
 		return null;
 	}
 
-	@Override
 	public String provisionDevice(DeviceProvisioningInfo deviceInfo) {
 		// TODO Auto-generated method stub
 		String requestBody = "[" + gson.toJson(deviceInfo) + "]";

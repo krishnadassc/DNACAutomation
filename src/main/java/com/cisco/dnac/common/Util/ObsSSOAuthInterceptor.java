@@ -104,7 +104,6 @@ public class ObsSSOAuthInterceptor implements ClientHttpRequestInterceptor {
 			RestTemplate restTemplate  = getRestTemplate();
 			ResponseEntity<String> callback = restTemplate.postForEntity(url, entity, String.class);
 			if (callback.getStatusCode().is2xxSuccessful()) {
-
 				headers = new HttpHeaders();
 				String token = callback.getBody();
 				JsonParser parser= new JsonParser();
