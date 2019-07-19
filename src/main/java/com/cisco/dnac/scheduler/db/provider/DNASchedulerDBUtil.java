@@ -1,15 +1,17 @@
 package com.cisco.dnac.scheduler.db.provider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import com.cisco.dnac.scheduler.dao.RemoteTaskRunInfo;
-import com.cisco.dnac.scheduler.dao.SystemStateEntry;
+import com.cisco.dnac.scheduler.dao.ScheduleTaskDAO;
+import com.cisco.dnac.scheduler.dto.ScheduleTask;
 import com.cisco.it.sig.common.dao.ICommonDao;
 
 @Service
@@ -20,175 +22,74 @@ public class DNASchedulerDBUtil {
 
 	private static final Logger logger = Logger.getLogger(DNASchedulerDBUtil.class);
 
-	public void cleanupTaskStatus() {
+	public List<ScheduleTaskDAO> getScheduledTaskList() {
+		List<ScheduleTaskDAO> list = null;
 		try {
-			Query query = getActiveScheduleQuery();
-			SystemStateEntry systemStateEntry = dao.findByQuery(query, SystemStateEntry.class, "SystemStateEntry");
-			systemStateEntry.setValue("STATUS_CANCELLED");
-			dao.save(systemStateEntry);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.warn("Exception Occured in ", e);
-		}
-	}
-
-	public static Query getActiveScheduleQuery() {
-		Query query = new Query();
-		Criteria criteriaOr = new Criteria();
-		criteriaOr.orOperator(Criteria.where("value").is("STATUS_IN_PROGRESS"),
-				Criteria.where("value").is("STATUS_IN_SCHEDULED"));
-		query.addCriteria(criteriaOr);
-		return query;
-	}
-
-	public SystemStateEntry getSystemStateProperty(String property) {
-
-		SystemStateEntry entry = null;
-		try {
-
-			Query query = new Query();
-			query.addCriteria(Criteria.where("property").is(property));
-			List<SystemStateEntry> list = dao.findAll(query, SystemStateEntry.class, "SystemStateEntry");
-
-			if (list != null && !list.isEmpty()) {
-				entry = list.get(0);
-			} else {
-				logger.error("SystemStateEntry not found); property=" + property);
-			}
-		} catch (Exception ex) {
-			logger.warn("Error while reading system state for property " + property, ex);
-		}
-		return entry;
-	}
-
-	public SystemStateEntry getStatus(String taskName) {
-		SystemStateEntry stateEntry = getSystemStateProperty("task." + taskName);
-
-		if (stateEntry == null) {
-			stateEntry = new SystemStateEntry();
-			stateEntry.setProperty("task." + taskName);
-		}
-
-		logger.debug("Current System task status " + taskName + ":" + stateEntry.getValue());
-		return stateEntry;
-	}
-
-	public void updateStatus(SystemStateEntry status) {
-		try {
-			logger.debug("Task: " + status.getProperty() + " changed state to " + status.getValue());
-
-			Query query = new Query();
-			query.addCriteria(Criteria.where("property").is(status.getProperty()));
-
-			SystemStateEntry systemStateEntry = dao.findByQuery(query, SystemStateEntry.class, "SystemStateEntry");
-
-			// enataraj : may need to revisit (Modify single object)
-			status.setId(systemStateEntry.getId());
-
-			dao.save(status);
+			list = dao.findAll(ScheduleTaskDAO.class);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.warn("Exception Occured in ", e);
+			logger.error("Exception while getting details ", e);
 		}
+		return list;
+	}
+
+	public List<ScheduleTask> convertDaoToDtO(List<ScheduleTaskDAO> list) {
+		List<ScheduleTask> taskList = new ArrayList();
+		for (int i = 0; i < list.size(); i++) {
+			ScheduleTaskDAO taskDao = list.get(i);
+			ScheduleTask task = new ScheduleTask();
+
+			task.setDescription(taskDao.getDescription());
+			task.setTaskDetails(taskDao.getTaskDetails());
+			task.setTaskName(taskDao.getTaskName());
+			task.setTimeInMilliseconds(taskDao.getTimeInMilliSeconds());
+			task.setId(taskDao.getId());
+			task.setStatus(taskDao.getStatus());
+			taskList.add(task);
+		}
+		return taskList;
 
 	}
 
-	public void archiveStatus(RemoteTaskRunInfo runInfo) {
+	public ScheduleTaskDAO createSchedulerTask(ScheduleTask scheduleTask) {
+		ScheduleTaskDAO task = null;
 		try {
-			dao.save(runInfo);
+			task = new ScheduleTaskDAO();
+			task.setDescription(scheduleTask.getDescription());
+			task.setStatus(scheduleTask.getStatus());
+			task.setTaskDetails(scheduleTask.getTaskDetails());
+			task.setTaskName(scheduleTask.getTaskName());
+			task.setTimeInMilliSeconds(scheduleTask.getTimeInMilliseconds());
+
+			// enataraj : Need actual id.
+			dao.create(task);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.warn("Exception Occured in ", e);
+			logger.error("Exception while create task ", e);
 		}
+		return task;
 	}
 
-	public boolean isTaskDisabled(String taskName) {
-		SystemStateEntry state = getStatus(taskName);
-		return state.isDisabled();
-
-	}
-
-	/*
-	 * public List<SystemStateEntry> getTasksByAgentAndStatus(String agent, String
-	 * status) { List<SystemStateEntry> tasks = null; ObjStore<SystemStateEntry>
-	 * store = ObjStoreHelper.getStore(SystemStateEntry.class); try { String query =
-	 * "nodeName == '" + agent + "' && value == '" + status + "'"; tasks =
-	 * store.query(query); logger.debug("query to update agent status " + query); }
-	 * catch (Exception e) { // TODO Auto-generated catch block
-	 * logger.warn("Exception Occured in ", e); } return tasks; }
-	 */
-
-	public void updateSystemStateProperty(SystemStateEntry stateEntry) {
-
+	public void updateSchedulerTask(int id, String status) {
 		try {
-			logger.debug("Task: " + stateEntry.getProperty() + " changed state to " + stateEntry.getValue());
-
 			Query query = new Query();
-			query.addCriteria(Criteria.where("property").is(stateEntry.getProperty()));
-
-			SystemStateEntry systemStateEntry = dao.findByQuery(query, SystemStateEntry.class, "SystemStateEntry");
-
-			// enataraj : may need to revisit (Modify single object)
-			stateEntry.setId(systemStateEntry.getId());
-
-			dao.save(stateEntry);
+			query.addCriteria(Criteria.where("id").is(id));
+			dao.updateAll(query, new Update().set("status", status), ScheduleTaskDAO.class);
+			logger.info("Status is updated into table : " + status);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.warn("Error while updating system state for property ", e);
+			logger.error("Exception while update the task ", e);
 		}
-
 	}
 
-	public void updateSystemStateProperty(String property, String value) {
+	public void deleteScheduledTask(String taskId) {
 		try {
-
-			SystemStateEntry stateEntry = getSystemStateProperty(property);
-
-			if (stateEntry == null) {
-				stateEntry = new SystemStateEntry();
-			}
-
-			stateEntry.setLastUpdated(System.currentTimeMillis());
-			stateEntry.setProperty(property);
-
-			if ((value != null) && (value.length() > 255)) {
-				value = value.substring(0, 255);
-			}
-
-			stateEntry.setValue(value);
-
-			// SystemStateCache.getInstance().update(stateEntry);
-
 			Query query = new Query();
-			query.addCriteria(Criteria.where("property").is(property));
-
-			SystemStateEntry systemStateEntry = dao.findByQuery(query, SystemStateEntry.class, "SystemStateEntry");
-
-			stateEntry.setId(systemStateEntry.getId());
-			dao.save(stateEntry);
-
-		} catch (Exception ex) {
-			logger.warn("Error while updating system state for property " + property, ex);
+			query.addCriteria(Criteria.where("id").is(taskId));
+			dao.delete(query, ScheduleTaskDAO.class);
+		} catch (Exception e) {
+			logger.error("Exception while delete the task from table ", e);
 		}
 	}
 
-	public void deleteSystemStateProperty(String property) {
-		try {
-			// Delete from the cache first
-			// SystemStateCache.getInstance().delete(property);
-
-			Query query = new Query();
-			query.addCriteria(Criteria.where("property").is(property));
-
-			SystemStateEntry systemStateEntry = dao.findByQuery(query, SystemStateEntry.class, "SystemStateEntry");
-
-			dao.delete(systemStateEntry.getId());
-
-		} catch (Exception ex) {
-			logger.warn("Error while deleting system state for property " + property, ex);
-		}
-	}
 }

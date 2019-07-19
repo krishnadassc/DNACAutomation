@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -35,7 +36,7 @@ public class PNPServiceImpl implements PnpService {
 
 	@Autowired
 	private SiteService siteService;
-
+	private Logger logger = Logger.getLogger(PNPServiceImpl.class);
 	@Autowired
 	private TemplateService templateService;
 	private Gson gson = new Gson();
@@ -154,5 +155,13 @@ public class PNPServiceImpl implements PnpService {
 			return response.getBody();
 		return "";
 	}
+	public void execute() {
+		// Needs to Implement the hook ... 
+		
+		logger.info("Invoked PNP Service ... ");
+		
+		
+	}
+
 
 }

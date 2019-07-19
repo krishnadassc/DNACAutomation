@@ -14,4 +14,6 @@ public interface PnpService {
 	
 	public String pnpClaim(String payload);
 
+	public void execute();
+
 }

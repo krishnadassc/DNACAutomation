@@ -12,9 +12,9 @@ public interface CommonUrl {
 
 	String PNP_AUTOMATE_URL =  "/onboard";
 
-	String PNP_STATUS =  "/status";
-	
-	String PNP_DEVICES =  "/devices";
+	String PNP_STATUS = "/status";
+
+	String PNP_DEVICES = "/devices";
 
 	String PNP_IMPORT = "/import";
 
@@ -23,5 +23,12 @@ public interface CommonUrl {
 	
 	String SITE_URL = "/site";
 	
-	String CFS_URL = BASE_URL+"/cfs";
+	String SITE_PROFILE_URL = BASE_URL+"/siteprofile/site";
+	
+	String DEVICE_URL = BASE_URL+"/network-device";
+
+	String SCHEDULER_URL = "/schedule";
+
+	String CFS_URL = BASE_URL + "/cfs";
+
 }

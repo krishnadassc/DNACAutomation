@@ -2,12 +2,12 @@ package com.cisco.dnac.site.service;
 
 import java.util.List;
 
+
 import com.cisco.dnac.common.entity.DeviceEntity;
 import com.cisco.dnac.common.entity.SiteEntity;
 import com.cisco.dnac.common.entity.SiteProfileEntity;
 
 public interface SiteService {
-
 
 	
 	public String getSitesAPIResponse() ;
@@ -35,9 +35,6 @@ public interface SiteService {
 	public List<String> getDeviceIdsBySiteHierarchyName(String groupNameHierarchy);
 
 	public SiteProfileEntity getSiteProfileBySiteUuid(String siteUuid);
-
-	
-	
 
 
 }
