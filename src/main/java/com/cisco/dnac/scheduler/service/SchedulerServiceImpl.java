@@ -18,6 +18,9 @@ public class SchedulerServiceImpl implements SchedulerService {
 
 	@Autowired
 	private SystemExecutorServiceIf scheduler;
+	
+	@Autowired
+	private WorkflowInvoker invoker;
 
 	@Override
 	public void createSchedulerTask(ScheduleTask scheduleTask) {
@@ -25,7 +28,9 @@ public class SchedulerServiceImpl implements SchedulerService {
 		// invoke schedule job
 		String taskUniqueName = scheduleTask.getTaskName() + "-" + scheduleTask.getId();
 		long scheduledTimeInMilliSec = scheduleTask.getTimeInMilliseconds();
-		scheduler.sheduleTask(taskUniqueName, new Thread(), scheduledTimeInMilliSec);
+		
+		
+		scheduler.sheduleTask(taskUniqueName, invoker, scheduledTimeInMilliSec);
 		dbutil.updateSchedulerTask(scheduleTask.getId(), SchedulerConstants.SCHEDULED);
 	}
 

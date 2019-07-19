@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.cisco.dnac.common.Util.RestClient;
 import com.cisco.dnac.common.constants.DNACUrl;
+import com.cisco.dnac.scheduler.service.WorkflowInvoker;
 import com.cisco.dnac.site.service.SiteService;
 
 @Service
@@ -24,6 +26,9 @@ public class PNPServiceImpl implements PnpService{
 	
 	@Autowired
 	private SiteService siteService;
+	
+	private static final Logger logger = Logger.getLogger(WorkflowInvoker.class);
+	
 	/* Steps
 	 * 1. get the site info with name
 	 * 2. find site template
@@ -32,6 +37,8 @@ public class PNPServiceImpl implements PnpService{
 	 * 5. claim device
 	 * 
 	 */	
+	
+	
 	public String onboard() {
 		try {
 			 List<Map<?, ?>> data = PNPUtil.readObjectsFromCsv(new File("src/main/resources/sample.csv"));
@@ -104,6 +111,15 @@ public class PNPServiceImpl implements PnpService{
 		if(response.getStatusCodeValue() == 200)
 			return response.getBody();
 		return "";
+	}
+
+	@Override
+	public void execute() {
+		// Needs to Implement the hook ... 
+		
+		logger.info("Invoked PNP Service ... ");
+		
+		
 	}
 
 }

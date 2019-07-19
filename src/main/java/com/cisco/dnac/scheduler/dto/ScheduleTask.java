@@ -3,7 +3,7 @@ package com.cisco.dnac.scheduler.dto;
 public class ScheduleTask {
 
 	private int id = -1;
-	private String taskName="";
+	private String taskName=SchedulerConstants.PNPSERVICE;
 	private String description="";
 	private long timeInMilliseconds;
 	private String taskDetails="";

@@ -10,5 +10,6 @@ public class SchedulerConstants {
 	public static final String FAILED = "Failed";
 	public static final String COMPLETED = "Completed";
 	public static final String SCHEDULED = "Scheduled";
+	public static final String PNPSERVICE = "PNPService";
 	
 }
