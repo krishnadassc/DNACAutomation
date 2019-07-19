@@ -32,43 +32,7 @@ public class PNPServiceImpl implements PnpService{
 	 * 5. claim device
 	 * 
 	 */	
-	public String onboard() {
-		try {
-			 List<Map<?, ?>> data = PNPUtil.readObjectsFromCsv(new File("src/main/resources/sample.csv"));
-			 for (Map<?, ?> deviceData : data) {
-				 String siteId = getSiteId();
-				 String configId = gettemplateName(siteId);
-				 String params = getTemplate(configId, deviceData);
-				 String uuid = addDevice();
-				 String status = claimDevice();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public String findTemplateName(List<Object> data, templateName) {
 
-	/*    for (attr : data){
-	        if ('key' in attr){
-	            if attr['key'] == 'day0.templates'{
-	                for dev in attr['attribs'] {
-	                    for template in dev['attribs'][0]['attribs'][0]['attribs'] {
-	                        if template['key'] == 'template.id'{
-	                            for templ_attrs in template['attribs'] {
-	                                if templ_attrs['key'] == 'template.name' and templ_attrs['value'] == templateName{
-	                                    return template['value']
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	        }
-	    }*/
-	}
 	
 	public String pnpStatus(String serialNo) {
 		ResponseEntity<String> response =  restClient.exchange(null, HttpMethod.GET, DNACUrl.PNP_STATUS+serialNo);
@@ -104,6 +68,12 @@ public class PNPServiceImpl implements PnpService{
 		if(response.getStatusCodeValue() == 200)
 			return response.getBody();
 		return "";
+	}
+
+	@Override
+	public String onboard() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -23,4 +23,8 @@ public interface CommonUrl {
 	String SITE_URL = "/site";
 	
 	String CFS_URL = BASE_URL+"/cfs";
+	
+	String SITE_PROFILE_URL = BASE_URL+"/siteprofile/site";
+	
+	String DEVICE_URL = BASE_URL+"/network-device";
 }
