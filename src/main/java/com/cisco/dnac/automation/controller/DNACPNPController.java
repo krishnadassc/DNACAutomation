@@ -93,4 +93,17 @@ public class DNACPNPController {
 	    }
 	    return null;
 	}
+	
+	@RequestMapping(value = CommonUrl.PNP_device, method = RequestMethod.GET)
+	@ResponseBody
+	public String getDevice(@RequestParam String serialno ) {
+	    try {
+	    	String response = pnpService.getDeviceClaimStatus(serialno);
+	    	logger.info(response);
+	    	return response;
+	    } catch (Exception e) {
+
+	    }
+	    return null;
+	}
 }	

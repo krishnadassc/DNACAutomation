@@ -30,5 +30,5 @@ public interface DNACUrl {
 	
 	String DEVICE_CLAIM_STATUS = "dna/intent/api/v1/onboarding/pnp-device/";
 	
-	String NETWORK_DEVICE = "/api/v1/network-device";
+	String NETWORK_DEVICE = "api/v1/network-device";
 }

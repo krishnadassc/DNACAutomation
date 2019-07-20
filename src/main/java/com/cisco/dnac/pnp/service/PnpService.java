@@ -15,5 +15,6 @@ public interface PnpService {
 	public String pnpClaim(String payload);
 
 	public void execute();
+	public String getDeviceClaimStatus(String serialNumber) ;
 
 }

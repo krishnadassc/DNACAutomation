@@ -19,6 +19,7 @@ public interface CommonUrl {
 	String PNP_IMPORT = "/import";
 
 	String PNP_CLAIM = "/claim";
+	String PNP_device = "/device";
 	
 	
 	String SITE_URL = "/site";
